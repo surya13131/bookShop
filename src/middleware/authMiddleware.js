@@ -11,24 +11,20 @@ exports.protect = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     req.user = decoded;
-
     next();
   } catch (err) {
-    console.error('Token verification failed:', err.message);
-    res.status(401).json({ msg: 'Token is not valid' });
+    res.status(401).json({ msg: 'Invalid token' });
   }
 };
 
 exports.adminOnly = (req, res, next) => {
-  
   if (!req.user) {
-    return res.status(401).json({ msg: 'Unauthorized' });
+    return res.status(401).json({ msg: 'Unauthorized: No user data' });
   }
 
   if (req.user.role !== 'admin') {
-    return res.status(403).json({ msg: 'Admins only: Access forbidden' });
+    return res.status(403).json({ msg: 'Access forbidden: Admins only' });
   }
 
   next();
